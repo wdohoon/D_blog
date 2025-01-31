@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import {Session} from "@supabase/auth-js";
 
 export default function NewPostPage() {
     const router = useRouter();
@@ -11,7 +12,7 @@ export default function NewPostPage() {
     const [content, setContent] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
-    const [session, setSession] = useState(null);
+    const [session, setSession] = useState<Session | null>(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -62,6 +63,7 @@ export default function NewPostPage() {
                     title,
                     author,
                     content,
+                    thumbnail_url: thumbnailUrl,
                 },
             ]);
 
@@ -111,6 +113,16 @@ export default function NewPostPage() {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-40"
+                    />
+                </div>
+
+                <div>
+                    <label className="block mb-2 font-medium">썸네일 이미지 🖼️</label>
+                    <input
+                        type="file"
+                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        accept="image/*"
                     />
                 </div>
 

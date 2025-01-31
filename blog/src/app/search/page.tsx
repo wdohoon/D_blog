@@ -2,6 +2,15 @@ import { supabase } from "@/lib/supabaseClient";
 import React from "react";
 import Link from "next/link";
 
+function formatDate(dateString: string) {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}년 
+          ${(date.getMonth() + 1).toString().padStart(2, '0')}월 
+          ${date.getDate().toString().padStart(2, '0')}일 
+          ${date.getHours().toString().padStart(2, '0')}시 
+          ${date.getMinutes().toString().padStart(2, '0')}분`;
+}
+
 export default async function SearchPage({
                                              searchParams,
                                          }: {
@@ -21,7 +30,7 @@ export default async function SearchPage({
     const { data: posts, error } = await supabase
         .from("posts")
         .select("*")
-        .or(`title.ilike.%${query}%,author.ilike.%${query}%,date.ilike.%${query}%`);
+        .or(`title.ilike.%${query}%, author.ilike.%${query}%, content.ilike.%${query}%`)
 
     if (error) {
         console.error("검색 오류:", error.message);
@@ -58,7 +67,7 @@ export default async function SearchPage({
                         <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{post.content}</p>
                         <div className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center">
                             <span>✍️ {post.author}</span>
-                            <span>🗓️ {post.date}</span>
+                            <span>🗓️ {formatDate(post.date)}</span>
                         </div>
                     </div>
                 ))}
