@@ -8,7 +8,7 @@ import SearchBar from './search-bar';
 import AuthLinks from './auth-links';
 
 export const metadata: Metadata = {
-    title: 'MyBlog',
+    title: 'D_Blog',
     description: 'Velog 스타일 블로그 + 검색 기능',
 };
 
@@ -26,7 +26,7 @@ export default function RootLayout({
                 <nav className="max-w-screen-lg mx-auto px-4 h-16 flex items-center justify-between">
                     {/* 로고 */}
                     <div className="text-xl font-bold cursor-pointer">
-                        <a href="/">MyBlog</a>
+                        <a href="/">D_Blog</a>
                     </div>
 
                     {/* 우측 메뉴 */}
@@ -47,9 +47,9 @@ export default function RootLayout({
             {children}
 
             {/* 푸터 */}
-            <footer className="bg-white dark:bg-gray-800 border-t mt-8 transition-colors duration-300">
+            <footer className="bg-white dark:bg-gray-800 border-t transition-colors duration-300 fixed bottom-0 w-full">
                 <div className="max-w-screen-lg mx-auto px-4 h-16 flex items-center justify-center">
-                    © 2025 MyBlog. All rights reserved.
+                    © 2025 D_Blog. All rights reserved.
                 </div>
             </footer>
         </Providers>
