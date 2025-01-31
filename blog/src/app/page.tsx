@@ -1,101 +1,69 @@
-import Image from "next/image";
+// src/app/page.tsx
+import { supabase } from '@/lib/supabaseClient';
+import React from 'react';
 
-export default function Home() {
+export default async function HomePage() {
+  // Supabase에서 posts 불러오기 (최신 날짜 기준 정렬 예시)
+  const { data: posts, error } = await supabase
+      .from('posts')
+      .select('*')
+      .order('date', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching posts:', error.message);
+    return (
+        <main className="max-w-screen-lg mx-auto px-4 py-8">
+          <h1 className="text-2xl font-semibold mb-4">에러가 발생했습니다.</h1>
+          <p className="text-red-600">{error.message}</p>
+        </main>
+    );
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      <main className="max-w-screen-lg mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">게시글 목록</h1>
+        <div className="space-y-4">
+          {posts && posts.length > 0 ? (
+              posts.map((post) => (
+                  <div
+                      key={post.id}
+                      className="bg-white dark:bg-gray-800 rounded-md shadow p-4"
+                  >
+                    <div className="flex gap-4">
+                      {/* 썸네일이 있다면 표시 */}
+                      {post.thumbnail_url && (
+                          <img
+                              src={post.thumbnail_url}
+                              alt="thumbnail"
+                              className="w-32 h-32 object-cover rounded"
+                          />
+                      )}
+                      <div className="flex-1">
+                        <h2 className="text-xl font-semibold">{post.title}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          작성자: {post.author} | 날짜: {post.date}
+                        </p>
+                        <p className="mt-2 text-gray-700 dark:text-gray-300">
+                          {post.content}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+              ))
+          ) : (
+              <p className="text-gray-600">게시글이 없습니다.</p>
+          )}
+        </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+        {/* 새 글 작성 페이지로 이동 버튼 */}
+        <div className="mt-8">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+              href="/posts/new"
+              className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            새 글 작성하기
           </a>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
   );
 }
